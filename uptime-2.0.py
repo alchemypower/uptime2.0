@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 ######################################################################
 # (C) ALCHEMY POWER INC 2016,2017 etc. - ALL RIGHT RESERVED.
@@ -40,7 +41,9 @@
 import time
 import smbus
 import sys
+assert ('linux' in sys.platform), "This code runs on Linux only."
 import os
+import signal
 import subprocess
 
 from smbus import SMBus
@@ -98,7 +101,7 @@ max_reading = 2097.0 # 2^11 - 1 = 12 bits of information, with MSB set to zero. 
 #
 # All the timeouts and other operational variables.
 lange = 0x02 # number of bytes to read in the block. Need for Debug statements below.
-zeit = 1     # number of seconds to sleep between each measurement group. This will read variables every 20 seconds.
+zeit = 2     # number of seconds to sleep between each measurement group. This will read variables every 20 seconds.
 tiempo = 0.1 # number of seconds to sleep between each channel reading.
 # tiempo = 1/SPS (default is 128) + 1 ms - so tiempo can be as low as 0.002 seconds. We deliberately make it
 # higher here for readings to settle down. Fast enough for us. In fact, in many cases this may not even be needed.
@@ -161,7 +164,7 @@ def getreading(adc_address,adc_channel):
 #	print "Data register read as 16 but word is ", reading
 
 # Do the proper bit movements. Refer to data sheet for how the bits are read in.
- 	valor = ((((reading) & 0xFF) <<8) | ((int(reading) & 0xFFF0)>>8))
+	valor = ((((reading) & 0xFF) <<8) | ((int(reading) & 0xFFF0)>>8))
 	valor = valor >> 4 # 4 LSB bits are ignored.
 
 # Debug print the bit movement value...
@@ -174,6 +177,16 @@ def getreading(adc_address,adc_channel):
 # End of sub routine
 #####################################################################################################################
 #####################################################################################################################
+# Define the keyboard interrupt routine.
+def keyboardInterruptHandler(signal, frame):
+	print
+	print("KeyboardInterrupt (ID: {}) detected. Cleaning up...".format(signal))
+	sys.stdout.flush()	
+	exit(0)
+#####################################################################################################################
+#####################################################################################################################
+# Start watching for Keyboard interrupt
+signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
 # Main routine. 
 
@@ -189,22 +202,22 @@ ch3_mult = 1 # Multiplier for Channel 3 - V for Temperature at the NTC (thermist
 print ("Date & Time               Vin   Vout  Batt-V  Board Temperature")
 while (True):
 # Read Channel 0 - Input Voltage - max 5.5V.
-	Vin = ch0_mult*getreading(address,channel0) + 0.08
+	Vin = ch0_mult*getreading(address,channel0)
 #	if (Vin < V_in_min):
 #		Vin = 0
 # Sleep between each reading. Sleep time is in the subroutine. Use this to slow down readings further. 
 # Add sleep as needed.
 #	time.sleep(tiempo)
 # Read Channel 1 - Battery V
-	Vbattery = ch1_mult*getreading(address, channel1) + 0.08
+	Vbattery = ch1_mult*getreading(address, channel1) + 0.2
 # Read Channel 2 - Output V
-	Vout = ch1_mult*getreading(address, channel2) + 0.08
+	Vout = ch1_mult*getreading(address, channel2)
 # Read Channel 3 - Temperature.
-	TempV = ch3_mult*getreading(address, channel3) + 0.08
+	TempV = ch3_mult*getreading(address, channel3)
 # For Pi-Z-UpTime 2.0 use the value below.
-	TempC = (3.94 - TempV) / 0.0432 # Temperature in C calculated.
-# Use the line below for Pi-UpTime UPS 2.0
-#	TempC = (4.236 - TempV) / 0.0408 # Temperature in C calculated.
+#	TempC = (4.0 - TempV) / 0.0432 # Temperature in C calculated.
+# Use the below line for Pi-UpTime UPS 2.0
+	TempC = (4.236 - TempV) / 0.0408 # Temperature in C calculated.
 # Use the above line for Pi-Z-UpTime 2.0
 	TempF = TempC * 1.8 + 32.0  # Temperature in F
 # Temperature is measured by measuring the V across the NTC. We assume a linear behavior in the use range.
@@ -227,7 +240,7 @@ while (True):
 #		print ("%s %5.2f %5.2f %5.2f %8.2fC %6.2fF" % (time.ctime(), Vin, Vout, Vbattery, TempC, TempF)) 
 	print ("%s %5.2f %5.2f %5.2f %8.2fC %6.2fF" % (time.ctime(), Vin, Vout, Vbattery, TempC, TempF)) 
 # Write the values read should there be an interrupt. Since output is to stdout, it needs to be flushed
-# on exit or interrupt. Without that, readings could be lost.
+##
 #====================================================================================
 # Check to see if all operating conditions are OK. This code is a duplicate of
 # the shutdown code used with the cron script.
@@ -274,6 +287,4 @@ while (True):
 # End of check statements.
 #====================================================================================
 	sys.stdout.flush()
-# Sleep till next reading.
 	time.sleep(zeit)
-# End of main loop.
