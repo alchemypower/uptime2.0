@@ -15,7 +15,8 @@ To monitor the battery and shutdown the pi automatically every time the Pi reboo
       \# Next line is for the operation of Pi-UpTime or PiZ-UpTime \
       sudo python /home/pi/uptime/uptime-2.0-rc-local.py &
 
-     _ exit 0      #  <-- Note this is the last line in the file /etc/rc.local _
+     _exit 0      #  <-- Note this is the last line in the file /etc/rc.local _
+     
 4) Save the edited file /etc/rc.local and reboot
 
 After reboot, the script is running in the background. No log messages are printed or stored.
