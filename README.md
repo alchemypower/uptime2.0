@@ -25,7 +25,7 @@ Best to run this script with Python 2. Should also work with Python 3.
 The polling frequency can be changed by changing the value of the variable ```tiempo``` in the script.
 
 At any time you can hit Control C to terminate the program. 
-_Please make sure you have commented / uncommented the line which measures the temperature, depending on whether you
- are using Pi-UpTime or PiZ-UpTime._
+**_Please make sure you have commented / uncommented the line which measures the temperature, depending on whether you
+ are using Pi-UpTime or PiZ-UpTime._**
  
  Contact support via https://alchemy-power.com/contact-us/ web site should you have any issues.
