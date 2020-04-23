@@ -12,11 +12,11 @@ To monitor the battery and shutdown the pi automatically every time the Pi reboo
    you use sudo to edit the file. For example, using nano, the command will be "sudo nano /etc/rc.local"
 3) Add the following 2 lines just before the last line in /etc/rc.local - the last line in the file is exit 0 
 
+      \# Next line is for the operation of Pi-UpTime or PiZ-UpTime
       sudo python /home/pi/uptime/uptime-2.0-rc-local.py &
 
       exit 0      #  <-- Note this is the last line in the file /etc/rc.local
 4) Save the edited file /etc/rc.local and reboot
-
 
 After reboot, the script is running in the background. No log messages are printed or stored.
 
@@ -28,4 +28,4 @@ At any time you can hit Control C to terminate the program.
 **_Please make sure you have commented / uncommented the line which measures the temperature, depending on whether you
  are using Pi-UpTime or PiZ-UpTime._**
  
- Contact support via https://alchemy-power.com/contact-us/ web site should you have any issues.
+ Contact support via https://alchemy-power.com/contact-us/ should you have any issues.
