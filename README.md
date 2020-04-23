@@ -12,7 +12,7 @@ To monitor the battery and shutdown the pi automatically every time the Pi reboo
    you use sudo to edit the file. For example, using nano, the command will be "sudo nano /etc/rc.local"
 3) Add the following 2 lines just before the last line in /etc/rc.local - the last line in the file is exit 0 
 
-      \# Next line is for the operation of Pi-UpTime or PiZ-UpTime
+      \# Next line is for the operation of Pi-UpTime or PiZ-UpTime \
       sudo python /home/pi/uptime/uptime-2.0-rc-local.py &
 
       exit 0      #  <-- Note this is the last line in the file /etc/rc.local
