@@ -90,7 +90,7 @@ vref = 6.144 # This is the max Vref - allows us to measure Vin up to Vin + 0.3V
 #####################################################################################################################
 
 
-max_reading = 2097.0 # 2^11 - 1 = 12 bits of information, with MSB set to zero. See page 15 of data sheet.
+max_reading = 2047.0 # 2^11 - 1 = 12 bits of information, with MSB set to zero. See page 15 of data sheet.
 
 # Now we determine the operating parameters.
 # lange = number of bytes to read. 
