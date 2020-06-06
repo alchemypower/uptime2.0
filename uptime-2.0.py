@@ -218,7 +218,7 @@ while (True):
 #	TempC = (4.0 - TempV) / 0.0432 # Temperature in C calculated.
 # Use the below line for Pi-UpTime UPS 2.0
 	TempC = (4.236 - TempV) / 0.0408 # Temperature in C calculated.
-# Use the above line for Pi-Z-UpTime 2.0
+# Line below computes Temperature in F from C
 	TempF = TempC * 1.8 + 32.0  # Temperature in F
 # Temperature is measured by measuring the V across the NTC. We assume a linear behavior in the use range.
 # According to Murata data sheet, the measurement of temperature is determined as below.
